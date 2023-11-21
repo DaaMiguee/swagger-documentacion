@@ -1,14 +1,14 @@
 import { Router } from "express";
 import viewController from '../controllers/views.controller.js'
-import { getUserData, checkSession, checkAdmin, publicAcces, privateAcces, manageProducts, checkAdminSession, checkRole} from '../middlewares/middlewares.js'
+import { getUserData, checkSession, checkAdmin, publicAcces, privateAcces, manageProducts, checkAdminSession, checkRole, checkAndCreateCart} from '../middlewares/middlewares.js'
 
 const router = Router();
 
 router.get('/', checkAdmin, getUserData, checkRole, viewController.allProducts);
 router.get('/realtimeproducts',checkAdminSession, manageProducts, getUserData, checkRole, viewController.realtimeproducts);
 router.get('/product/:pid', viewController.oneProduct);
-router.get('/view/products', getUserData, viewController.viewAllProducts),
-router.get('/view/carts/:cid', getUserData, checkRole, viewController.viewOneCart);
+router.get('/view/products', getUserData, checkAndCreateCart, viewController.viewAllProducts),
+router.get('/view/carts/:cid', getUserData, checkAndCreateCart, checkRole, viewController.viewOneCart);
 router.get('/register', publicAcces, viewController.viewRegister);
 router.get('/login', publicAcces, viewController.viewLogin);
 router.get('/profile', privateAcces, getUserData, viewController.viewProfile);

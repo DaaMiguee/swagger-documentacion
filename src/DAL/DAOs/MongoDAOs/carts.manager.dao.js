@@ -2,8 +2,8 @@ import { cartModel } from '../../mongoDB/models/carts.model.js';
 import BasicManager from './basic.manager.dao.js'
 import loguer from '../../../winston.js';
 
-class CartsManager extends BasicManager{
-    constructor(){
+class CartsManager extends BasicManager {
+    constructor() {
         super(cartModel, 'products.product');
     }
     async addProduct(cid, pid) {
@@ -66,6 +66,19 @@ class CartsManager extends BasicManager{
             cart.products = cart.products.filter(product => !product.product.equals(pid));
             await cart.save();
             return cart;
+        } catch (error) {
+            return error;
+        }
+    }
+    async createCartUser(uid) {
+        try {
+            // Crear un nuevo carrito vacío y asociarlo al usuario
+            const newCart = new cartModel({
+                user: uid, // Asocia el carrito al usuario recién registrado
+                products: [], // Inicialmente, el carrito está vacío
+            });
+            await newCart.save();
+            return newCart
         } catch (error) {
             return error;
         }

@@ -110,15 +110,19 @@ const delProdToCart = async(req,res) =>{
 }
 const purchase = async (req, res) => {
     const { cid } = req.params;
+    console.log("prueba");
+    console.log("session", req.session);
+    console.log("localss", res.locals.user);
     try {
         const cart = await cartModel.findById(cid);
+        console.log("CAAARRT", cart);
         // Verifica que el carrito exista
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
         // Crea un objeto de compra para el ticket
         const purchaseData = {
-            purchaser: req.session.user.email,
+            purchaser: res.locals.user.email,
             purchase_datetime: new Date(),
             // code: "2234234233", // generar codigo aca y no en el model
             amount: 0, // Inicialmente, el monto es 0

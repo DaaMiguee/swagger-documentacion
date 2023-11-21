@@ -53,7 +53,7 @@ const oneProduct = async (req, res) => {
 }
 
 const viewAllProducts = async (req, res) => {
-    const cartIdUser = req.session.user ? req.session.user.cart : null
+    const cartIdUser = req.session.user ? req.session.user.cart : (res.locals.user ? res.locals.user.cart : null);
     const page = req.query.page || 1;
     const limit = 10;
     try {
@@ -80,16 +80,18 @@ const viewOneCart = async (req, res) => {
     }
     try {
         const cart = await cartsManager.findById(cid);
+        console.log("carrito", cart);
         if (!cart) {
             return res.status(404).send("Cart not found");
         }
         res.render("cartView", {
-            cart, 
+            cart: cart, 
             user: res.locals.user, 
             onlyAdmin: res.locals.isAdmin, 
             isPremium: res.locals.isPremium});
-    } catch (error) {
-        res.status(500).send({ error });
+    }catch (error) {
+        console.error("Error en viewOneCart:", error);
+        res.status(500).send({ error: error.message || "Internal Server Error" });
     }
 }
 const viewRegister = (req, res) => {
